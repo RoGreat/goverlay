@@ -391,6 +391,8 @@ begin
   Process := TProcess.Create(nil);
   Output := TMemoryStream.Create;
   Valor := TStringList.Create;
+  Valor.Sorted := True;
+  Valor.Duplicates := dupIgnore;
 
   Process.Executable := FindDefaultExecutablePath('sh');
   Process.Parameters.Add('-c');
@@ -2852,6 +2854,10 @@ var
         LOCATEDFILE := FindAllFiles(FONTFOLDERS.DelimitedText, fontCombobox.Text);  //Locate specific folder for selected font
         FONTPATH := LOCATEDFILE[0];
         FONTTYPE := 'font_file=' + FONTPATH; //Use the correct path to point the font file
+      end
+      else
+      begin
+        FONTTYPE := '';
       end;
 
 
