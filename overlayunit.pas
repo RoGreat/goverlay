@@ -337,7 +337,7 @@ DISTROINFO1, DISTROINFO2, DISTROINFO3, DISTROINFO4, DISTRONAME, ARCH, RESOLUTION
 VKBASALT, FCAT, FSR, HDR, WINESYNC, VPS, FTEMP, REFRESHRATE, BATTERY, BATTERYCOLOR, BATTERYWATT, BATTERYTIME, DEVICE,DEVICEICON, MEDIA, MEDIACOLOR, CUSTOMCMD1, CUSTOMCMD2, LOGFOLDER, LOGDURATION, LOGDELAY, LOGINTERVAL, LOGTOGGLE, LOGVER, LOGAUTO, NETWORK: string; //extratab
 BlacklistStr, blacklistVAR: string;
 
-  FONT, FONT2: TStringList;
+  FONT, FONTFOLDERS: TStringList;
 
   //Boolean variables
   mangohudsel: boolean;
@@ -425,7 +425,7 @@ begin
 end;
 
 
-//Function to find font files (*.ttf) in /usr/share/fonts
+//Function to find font files (*.ttf)
 procedure ListarFontesNoDiretorio(ComboBox: TComboBox);
 var
   Arquivos: TStringList;
@@ -448,6 +448,7 @@ begin
   try
     for Arquivo in Arquivos do
     begin
+      FONTFOLDERS.Add(ExtractFileDir(Arquivo));
       ComboBox.Items.Add(ExtractFileName(Arquivo)); // Add filename into combobox
     end;
   finally
@@ -2812,12 +2813,12 @@ var
 
       //Font type  - Config Variable
 
-      //if fontCombobox.ItemIndex <> 0 then  //It doesnt apply for the DEFAULT font
-      //  begin
-      //    LOCATEDFILE := FindAllFiles(FONTFOLDER, fontCombobox.Text);  //Locate specific folder for selected font
-      //    FONTPATH := LOCATEDFILE[0];
-      //    FONTTYPE := 'font_file=' + FONTPATH; //Use the correct path to point the font file
-      //  end;
+      if fontCombobox.ItemIndex <> 0 then  //It doesnt apply for the DEFAULT font
+        begin
+          LOCATEDFILE := FindAllFiles(FONTFOLDERS, fontCombobox.Text);  //Locate specific folder for selected font
+          FONTPATH := LOCATEDFILE[0];
+          FONTTYPE := 'font_file=' + FONTPATH; //Use the correct path to point the font file
+        end;
 
 
       //Font size  - Config Variable
