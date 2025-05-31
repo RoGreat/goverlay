@@ -439,7 +439,6 @@ begin
   i := 0;
   while i < FONT.Count do
     begin
-        WriteLn('Value: ', FONT[i]);
         Arquivos.Add(FONT[i]); // Add TTF files
         inc(i);
     end;
@@ -448,8 +447,52 @@ begin
   try
     for Arquivo in Arquivos do
     begin
-      FONTFOLDERS.Add(ExtractFileDir(Arquivo));
       ComboBox.Items.Add(ExtractFileName(Arquivo)); // Add filename into combobox
+
+      FONTFOLDERS.Sorted := True;
+      FONTFOLDERS.Duplicates := dupIgnore;
+      FONTFOLDERS.Add(ExtractFileDir(Arquivo));
+      for fonte in FONTFOLDERS do
+      begin
+        WriteLn(fonte);
+      end;
+    end;
+  finally
+    Arquivos.Free; // Free memory
+  end;
+end;
+
+
+//Function to find font directories
+procedure ListFontDirectories(FONTFOLDERS: TStringList);
+var
+  Arquivos: TStringList;
+  Arquivo: String;
+  i: Integer;
+  fonte: String;
+begin
+  Arquivos := TStringList.Create;
+
+  LoadFont('fonts', FONT);
+
+  i := 0;
+  while i < FONT.Count do
+    begin
+        Arquivos.Add(FONT[i]); // Add TTF files
+        inc(i);
+    end;
+  FONT.Free;
+
+  try
+    for Arquivo in Arquivos do
+    begin
+      FONTFOLDERS.Sorted := True;
+      FONTFOLDERS.Duplicates := dupIgnore;
+      FONTFOLDERS.Add(ExtractFileDir(Arquivo));
+      for fonte in FONTFOLDERS do
+      begin
+        WriteLn(fonte);
+      end;
     end;
   finally
     Arquivos.Free; // Free memory
@@ -2815,7 +2858,7 @@ var
 
       if fontCombobox.ItemIndex <> 0 then  //It doesnt apply for the DEFAULT font
         begin
-          LOCATEDFILE := FindAllFiles(FONTFOLDERS, fontCombobox.Text);  //Locate specific folder for selected font
+          //LOCATEDFILE := FindAllFiles(FONTFOLDERS, fontCombobox.Text);  //Locate specific folder for selected font
           FONTPATH := LOCATEDFILE[0];
           FONTTYPE := 'font_file=' + FONTPATH; //Use the correct path to point the font file
         end;
