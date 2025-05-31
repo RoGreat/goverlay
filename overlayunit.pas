@@ -448,14 +448,6 @@ begin
     for Arquivo in Arquivos do
     begin
       ComboBox.Items.Add(ExtractFileName(Arquivo)); // Add filename into combobox
-
-      FONTFOLDERS.Sorted := True;
-      FONTFOLDERS.Duplicates := dupIgnore;
-      FONTFOLDERS.Add(ExtractFileDir(Arquivo));
-      for fonte in FONTFOLDERS do
-      begin
-        WriteLn(fonte);
-      end;
     end;
   finally
     Arquivos.Free; // Free memory
@@ -464,12 +456,11 @@ end;
 
 
 //Function to find font directories
-procedure ListFontDirectories(FONTFOLDERS: TStringList);
+procedure ListFontDirectories(Dirs: TStringList);
 var
   Arquivos: TStringList;
   Arquivo: String;
   i: Integer;
-  fonte: String;
 begin
   Arquivos := TStringList.Create;
 
@@ -486,13 +477,7 @@ begin
   try
     for Arquivo in Arquivos do
     begin
-      FONTFOLDERS.Sorted := True;
-      FONTFOLDERS.Duplicates := dupIgnore;
-      FONTFOLDERS.Add(ExtractFileDir(Arquivo));
-      for fonte in FONTFOLDERS do
-      begin
-        WriteLn(fonte);
-      end;
+      Dirs.Add(ExtractFileDir(Arquivo));
     end;
   finally
     Arquivos.Free; // Free memory
@@ -2856,12 +2841,18 @@ var
 
       //Font type  - Config Variable
 
+      FONTFOLDERS := TStringList.Create;
+      FONTFOLDERS.Sorted := True;
+      FONTFOLDERS.Duplicates := dupIgnore;
+      FONTFOLDERS.Delimiter := ';';
+      ListFontDirectories(FONTFOLDERS);
+
       if fontCombobox.ItemIndex <> 0 then  //It doesnt apply for the DEFAULT font
-        begin
-          //LOCATEDFILE := FindAllFiles(FONTFOLDERS, fontCombobox.Text);  //Locate specific folder for selected font
-          FONTPATH := LOCATEDFILE[0];
-          FONTTYPE := 'font_file=' + FONTPATH; //Use the correct path to point the font file
-        end;
+      begin
+        LOCATEDFILE := FindAllFiles(FONTFOLDERS.DelimitedText, fontCombobox.Text);  //Locate specific folder for selected font
+        FONTPATH := LOCATEDFILE[0];
+        FONTTYPE := 'font_file=' + FONTPATH; //Use the correct path to point the font file
+      end;
 
 
       //Font size  - Config Variable
